@@ -2,7 +2,7 @@
 
 ![Wagtail Logo](https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/wagtail/wagtail.png)
 
-Welcome to the "Learn Wagtail" repository! This repository is a collection of resources and examples to help you learn and understand Wagtail, a popular open-source CMS built on the Django web framework.
+Welcome to my personal "Learn Wagtail" repository! This space documents my journey of learning and exploring Wagtail, a powerful CMS built on the Django web framework.
 
 ## Table of Contents
 - [Introduction](#introduction)
