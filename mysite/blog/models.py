@@ -1,9 +1,13 @@
 from django.db import models
 
+# New imports added for ParentalKey, Orderable, InlinePanel
+
+from modelcluster.fields import ParentalKey
+
 # Add these:
-from wagtail.models import Page
+from wagtail.models import Page, Orderable
 from wagtail.fields import RichTextField
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, InlinePanel
 
 # add this:
 from wagtail.search import index
@@ -14,7 +18,8 @@ class BlogIndexPage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('intro')
-    ]
+    ] 
+#modify BlogindexModel
     
 class BlogPage(Page):
     date = models.DateField("Post date")
@@ -30,4 +35,19 @@ class BlogPage(Page):
         FieldPanel('date'),
         FieldPanel('intro'),
         FieldPanel('body'),
+
+        # Add this:
+        InlinePanel('gallery_images', label="Gallery images"),
+    ]
+    
+class BlogPageGalleryImage(Orderable):
+    page = ParentalKey(BlogPage, on_delete=models.CASCADE, related_name='gallery_images')
+    image = models.ForeignKey(
+        'wagtailimages.Image', on_delete=models.CASCADE, related_name='+'
+    )
+    caption = models.CharField(blank=True, max_length=250)
+
+    panels = [
+        FieldPanel('image'),
+        FieldPanel('caption'),
     ]
