@@ -15,10 +15,13 @@ from wagtail.search import index
 # Create your models here.
 class BlogIndexPage(Page):
     intro = RichTextField(blank=True)
-
-    content_panels = Page.content_panels + [
-        FieldPanel('intro')
-    ] 
+    # add the get_context method:
+    def get_context(self, request):
+        # Update context to include only published posts, ordered by reverse-chron
+        context = super().get_context(request)
+        blogpages = self.get_children().live().order_by('-first_published_at')
+        context['blogpages'] = blogpages
+        return context
 #modify BlogindexModel
     
 class BlogPage(Page):
