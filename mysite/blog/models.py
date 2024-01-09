@@ -6,12 +6,12 @@ from django.db import models
 
 # New imports added for ParentalKey, Orderable, InlinePanel
 
-from modelcluster.fields import ParentalKey
+from modelcluster.fields import ParentalKey,ParentalManyToManyField
 
 # Add these:
 from wagtail.models import Page, Orderable
 from wagtail.fields import RichTextField
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 
 # add this:
 from wagtail.search import index

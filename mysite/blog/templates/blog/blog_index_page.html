@@ -10,13 +10,14 @@
 
     <div class="intro">{{ page.intro|richtext }}</div>
 
-##add this code to the blog_index_page.html to set a parents and children
- <!-- Modify this: -->
+{% comment %} add this code to the blog_index_page.html to set a parents and children {% endcomment %}
+
+    <!-- Modify this: -->
 {% for post in blogpages %}
 {% with post=post.specific %}
     <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
 
-          {% with post.main_image as main_image %}
+         {% with post.main_image as main_image %}
             {% if main_image %}{% image main_image fill-160x100 %}{% endif %}
         {% endwith %}
 
