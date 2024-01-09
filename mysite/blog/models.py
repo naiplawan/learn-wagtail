@@ -6,17 +6,18 @@ from django.db import models
 
 # New imports added for ParentalKey, Orderable, InlinePanel
 
+# New imports added for ClusterTaggableManager, TaggedItemBase
 from modelcluster.fields import ParentalKey,ParentalManyToManyField
+from modelcluster.contrib.taggit import ClusterTaggableManager
+from taggit.models import TaggedItemBase
 
-# Add these:
+# Add Page and Orderable to the import statement:
 from wagtail.models import Page, Orderable
 from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
-
-# add this:
+# add index:
 from wagtail.search import index
-#add register_snippet 
-from wagtail.snippets.models import register_snippet
+
 
 # Create your models here.
 class BlogIndexPage(Page):
@@ -30,15 +31,25 @@ class BlogIndexPage(Page):
         return context
 #modify BlogindexModel
 
+# ... Keep the definition of BlogIndexPage model and add a new BlogPageTag model
+class BlogPageTag(TaggedItemBase):
+    content_object = ParentalKey(
+        'BlogPage',
+        related_name='tagged_items',
+        on_delete=models.CASCADE
+    )
+
 #add gallery images in model BlogPage   
 class BlogPage(Page):
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
     body = RichTextField(blank=True)
     
-# Add this:
+# define authors:
     authors = ParentalManyToManyField('blog.Author', blank=True)
-    
+# define tags:
+    tags = ClusterTaggableManager(through=BlogPageTag, blank=True) 
+
     # Add the main_image method:
     def main_image(self):
         gallery_item = self.gallery_images.first()
@@ -56,6 +67,8 @@ class BlogPage(Page):
         MultiFieldPanel([
             FieldPanel('date'),
             FieldPanel('authors', widget=forms.CheckboxSelectMultiple),
+            #add tag field
+            FieldPanel('tags'),
         ], heading="Blog information"),
         FieldPanel('intro'),
         FieldPanel('body'),
