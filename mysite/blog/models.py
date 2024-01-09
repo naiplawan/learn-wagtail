@@ -24,9 +24,17 @@ class BlogIndexPage(Page):
     intro = RichTextField(blank=True)
     # add the get_context method:
     def get_context(self, request):
+        
+        # Filter by tag
+        tag = request.GET.get('tag')
+        blogpages = BlogPage.objects.filter(tags__name=tag)
+        
         # Update context to include only published posts, ordered by reverse-chron
         context = super().get_context(request)
         blogpages = self.get_children().live().order_by('-first_published_at')
+        
+    # Update template context
+        context = super().get_context(request)
         context['blogpages'] = blogpages
         return context
 #modify BlogindexModel

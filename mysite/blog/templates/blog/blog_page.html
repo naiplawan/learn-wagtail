@@ -12,7 +12,7 @@
     <!-- Add this for author: -->
     {% with authors=page.authors.all %}
         {% if authors %}
-            <h3>Posted by:</h3>
+            <h2>Posted by:</h2>
             <ul>
                 {% for author in authors %}
                     <li style="display: inline">
@@ -23,12 +23,12 @@
             </ul>
         {% endif %}
     {% endwith %}
-    
+
     <div class="intro">{{ page.intro }}</div>
 
     {{ page.body|richtext }}
 
-        <!-- Add this: -->
+        <!-- Add this to show image: -->
         {% for item in page.gallery_images.all %}
         <div style="float: left; margin: 10px">
             {% image item.image fill-320x240 %}
@@ -37,5 +37,17 @@
     {% endfor %}
 
     <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
+
+    <!-- Add this for tag: -->
+{% with tags=page.tags.all %}
+{% if tags %}
+    <div class="tags">
+        <h3>Tags</h3>
+        {% for tag in tags %}
+            <a href="{% slugurl 'tags' %}?tag={{ tag }}"><button type="button">{{ tag }}</button></a>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
 
 {% endblock %}
