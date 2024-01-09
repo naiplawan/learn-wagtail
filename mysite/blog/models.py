@@ -1,3 +1,7 @@
+# Add this to the top of the file
+from wagtail.snippets.models import register_snippet
+
+from django import forms
 from django.db import models
 
 # New imports added for ParentalKey, Orderable, InlinePanel
@@ -11,6 +15,8 @@ from wagtail.admin.panels import FieldPanel, InlinePanel
 
 # add this:
 from wagtail.search import index
+#add register_snippet 
+from wagtail.snippets.models import register_snippet
 
 # Create your models here.
 class BlogIndexPage(Page):
@@ -29,6 +35,10 @@ class BlogPage(Page):
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
     body = RichTextField(blank=True)
+    
+# Add this:
+    authors = ParentalManyToManyField('blog.Author', blank=True)
+    
     # Add the main_image method:
     def main_image(self):
         gallery_item = self.gallery_images.first()
@@ -43,11 +53,12 @@ class BlogPage(Page):
     ]
 
     content_panels = Page.content_panels + [
-        FieldPanel('date'),
+        MultiFieldPanel([
+            FieldPanel('date'),
+            FieldPanel('authors', widget=forms.CheckboxSelectMultiple),
+        ], heading="Blog information"),
         FieldPanel('intro'),
         FieldPanel('body'),
-
-        # Add this:
         InlinePanel('gallery_images', label="Gallery images"),
     ]
     
@@ -62,3 +73,23 @@ class BlogPageGalleryImage(Orderable):
         FieldPanel('image'),
         FieldPanel('caption'),
     ]
+
+### add Author Model
+@register_snippet
+class Author(models.Model):
+    name = models.CharField(max_length=255)
+    author_image = models.ForeignKey(
+        'wagtailimages.Image', null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='+'
+    )
+
+    panels = [
+        FieldPanel('name'),
+        FieldPanel('author_image'),
+    ]
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Authors'
